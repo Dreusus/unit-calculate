@@ -1,0 +1,25 @@
+{
+  "name": "unit-calculate",
+  "version": "1.0.0",
+  "description": "Calculator with unit tests using Jest",
+  "main": "calc.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "babel-jest": "^27.2.4",
+    "jest": "^27.2.4"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
+  }
+}

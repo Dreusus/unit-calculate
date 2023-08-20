@@ -1,91 +1,71 @@
-let firstNumber = '';  // первое число
-let secondNumber = ''; // второе число
-let operation = '';    // операция
-let isOperationFinished = false;
-
-const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+let firstNumber = '';
+let secondNumber = '';
+let operation = '';
 const operations = ['-', '+', 'X', '/'];
 
-const display = document.querySelector('.calc-screen p');
-
-function clearAll() {
+export function clearAll() {
     firstNumber = '';
     secondNumber = '';
     operation = '';
-    isOperationFinished = false;
-    display.textContent = '0';
 }
 
-document.querySelector('.ac').onclick = clearAll;
-
-document.querySelector('.buttons').onclick = (event) => {
-    if (!event.target.classList.contains('btn')) return;
-    if (event.target.classList.contains('ac')) return;
-
-    const key = event.target.textContent;
-
-    if (digits.includes(key)) {
-        if (key === '.' && (firstNumber.includes('.') || secondNumber.includes('.'))) {
-            return;
-        }
-
-        if (isOperationFinished) {
-            clearAll();
-        }
-
-        if (!operation) {
-            firstNumber += key;
-            display.textContent = firstNumber;
-        } else {
-            secondNumber += key;
-            display.textContent = secondNumber;
-        }
-
+export function processKey(key) {
+    if (key === 'ac') {
+        clearAll();
         return;
     }
-
-    if (operations.includes(key)) {
-        if (firstNumber && secondNumber) {
-            // автоматически производим расчет
-            calculate();
+    
+    if (!isNaN(key) || key === '.') {
+        if (operation) {
+            secondNumber += key;
+        } else {
+            firstNumber += key;
+        }
+    } else if (operations.includes(key)) {
+        if (secondNumber) {
+            performOperation();
             secondNumber = '';
-            firstNumber = display.textContent;
         }
         operation = key;
-        return;
+    } else if (key === '=') {
+        performOperation();
     }
+}
 
-    if (key === '=') {
-        calculate();
-        isOperationFinished = true;
-    }
-};
-
-function calculate() {
-    let result;
-
+function performOperation() {
     switch (operation) {
-        case "+":
-            result = parseFloat(firstNumber) + parseFloat(secondNumber);
+        case '+':
+            firstNumber = String(Number(firstNumber) + Number(secondNumber));
             break;
-        case "-":
-            result = parseFloat(firstNumber) - parseFloat(secondNumber);
+        case '-':
+            firstNumber = String(Number(firstNumber) - Number(secondNumber));
             break;
-        case "X":
-            result = parseFloat(firstNumber) * parseFloat(secondNumber);
+        case 'X':
+            firstNumber = String(Number(firstNumber) * Number(secondNumber));
             break;
-        case "/":
-            if (secondNumber === '0') {
-                display.textContent = 'Ошибка';
-                clearAll();
-                return;
+        case '/':
+            if (Number(secondNumber) === 0) {
+                firstNumber = 'Ошибка';
+            } else {
+                firstNumber = String(Number(firstNumber) / Number(secondNumber));
             }
-            result = parseFloat(firstNumber) / parseFloat(secondNumber);
             break;
+        default:
+            firstNumber = 'Ошибка';
     }
 
-    display.textContent = result.toString();
-    firstNumber = result.toString();
-    secondNumber = '';
     operation = '';
+    secondNumber = '';
+}
+
+export function getCurrentFirstNumber() {
+    return firstNumber;
+}
+
+export function getCurrentSecondNumber() {
+    return secondNumber;
+}
+
+export function getCurrentOperation() {
+    return operation;
 }
